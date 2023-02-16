@@ -1,6 +1,8 @@
 # jenkins-terraform
 
-This repository is used for UnixArena Article demonstration 
+## Tutorial para configurar as credentials no Jenkins
+
+link: <https://aws.amazon.com/pt/blogs/compute/building-a-jenkins-pipeline-with-aws-sam/>
 
 link: <https://www.unixarena.com/2022/05/jenkins-integration-terraform-iac-pipeline-setup.html/>
 
@@ -11,8 +13,3 @@ link: <https://www.unixarena.com/2022/05/jenkins-integration-terraform-iac-pipel
 - Instalar o plugin do terrafor
     Configurar o plugin do terraform no jenkins
     Configurar crendenciais
-
-Environment Variables
-AWS_ACCESS_KEY_ID
-AWS_SECRET_ACCESS_KEY
-

@@ -8,12 +8,11 @@ pipeline {
             steps {
               echo 'Stage 1'
             }
-        stage('Starge 2') {
-            steps {
-              echo 'Stage 2 '
-            }
-
         }
-    }
+        stage('Stage 2'){
+          steps{
+            echo 'Stage 2'
+          }
+        }
   }
 }

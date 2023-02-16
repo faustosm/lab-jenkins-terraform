@@ -4,15 +4,10 @@ pipeline {
         LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins')
     }
     stages {
-        stage('Stage 1') {
+        stage('List Bucket S3') {
             steps {
-              echo 'Stage 1'
+              echo 'aws ls s3'
             }
-        }
-        stage('Stage 2'){
-          steps{
-            echo 'Stage 2'
-          }
         }
   }
 }

@@ -1,7 +1,8 @@
 pipeline {
-agent any
+    agent any
     environment {
         LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins')
+    }
 tools {
   terraform 'terraform'
 }

@@ -45,13 +45,7 @@ pipeline {
                 dir('jenkins-terraform-pipeline/ec2_pipeline/'){
                     script {
                         try {
-                            sh "terraform workspace new ${params.WORKSPACE}"
-                        } catch (err) {
-                            sh "terraform workspace select ${params.WORKSPACE}"
-                        }
-                        sh "terraform plan -var 'access_key=$ACCESS_KEY' -var 'secret_key=$SECRET_KEY' \
-                        -out terraform.tfplan"
-                        stash name: "terraform-plan", includes: "terraform.tfplan"
+                            sh "terraform plan"
                     }
                 }
             }

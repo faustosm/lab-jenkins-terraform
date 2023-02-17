@@ -3,9 +3,6 @@
 ## Tutorial para configurar as credentials no Jenkins
 
 ---
-link: <https://www.unixarena.com/2022/05/jenkins-integration-terraform-iac-pipeline-setup.html/> (Testando)
-
----
 link: <https://github.com/HSGiacomini/terraform_jenkins>
 
 ---

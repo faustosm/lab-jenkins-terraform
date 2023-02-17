@@ -1,8 +1,7 @@
- 
- 
-   pipeline {
+
+    pipeline {
     agent any
- 
+    
     stages {
         stage('checkout') {
             steps {
@@ -11,10 +10,10 @@
         }
         stage('init') {
             steps {
-                sh ('terraform Init') 
+                sh ('terraform init') 
             }
         }
-        stage('terraform  Action') {
+        stage('terraform  action') {
             steps {
                 echo "terraform action is --> ${action}"
                 sh ('terraform ${action} --auto-approve')

@@ -45,7 +45,7 @@ pipeline {
                 dir('jenkins-terraform-pipeline/ec2_pipeline/'){
                     script {
                         try {
-                            sh "terraform plan"
+z
                     }
                 }
             }

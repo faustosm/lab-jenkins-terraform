@@ -6,7 +6,6 @@ tools {
  stages { 
    stage ('Checkout Repo') { 
      steps { 
-       cleanWs()
        sh  'git clone https://github.com/faustosm/lab-jenkins-terraform.git'
       }
       } 
@@ -45,11 +44,6 @@ stage ('Terraform version') {
    terraform apply --auto-approve
    ''' 
    }
-        post { 
-        always { 
-            cleanWs()
-         }
-        }
        }
   }
 }

@@ -11,12 +11,12 @@
         }
         stage('init') {
             steps {
-                sh ('Terraform Init') 
+                sh ('terraform Init') 
             }
         }
-        stage('Terraform  Action') {
+        stage('terraform  Action') {
             steps {
-                echo "Terraform action is --> ${action}"
+                echo "terraform action is --> ${action}"
                 sh ('terraform ${action} --auto-approve')
             }
         }

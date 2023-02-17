@@ -8,17 +8,17 @@
         terraform 'terraform'
 }    
     stages {
-        stage('checkout') {
+        stage('Checkout') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/faustosm/lab-jenkins-terraform.git']]])
             }
         }
-        stage('init') {
+        stage('Terraform Init') {
             steps {
                 sh ('terraform init') 
             }
         }
-        stage('terraform  action') {
+        stage('Terraform  Action') {
             steps {
                 echo "terraform action is --> ${action}"
                 sh ('terraform ${action} --auto-approve')

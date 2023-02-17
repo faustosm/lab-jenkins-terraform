@@ -1,7 +1,12 @@
 
     pipeline {
     agent any
-    
+    environment {
+        LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
+    }
+    tools {
+        terraform 'terraform'
+}    
     stages {
         stage('checkout') {
             steps {

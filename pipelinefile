@@ -47,6 +47,13 @@ stage ('Terraform version') {
    terraform apply --auto-approve
    ''' 
    }
+ stage ('Terraform Destroy') { 
+  steps {
+   sh '''
+   cd terraform-test/
+   terraform destroy --auto-approve
+   ''' 
+   }
        }
   }
 }

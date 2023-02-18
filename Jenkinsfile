@@ -31,7 +31,6 @@ pipeline{
         }
         
         stages{
-
             stage('Build'){
                 steps{
             checkout([$class: 'GitSCM', branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/krishnaduttPanchagnula/Multifunctional-terraform-Jenkins-pipeline']]])
@@ -42,48 +41,42 @@ pipeline{
                     sh"terraform init"
                 }
             }
-
             stage('Action'){
-
                 stages{
                     stage('Networking'){
-                         when {
-                       expression{params.Networking == true
-                       }
+                        when {
+                        expression{params.Networking == true
+                        }
                 }
                 steps{
                     
                     sh"terraform ${params.Actions} -target=module.Netwoking"
                     
                     }
-
                 }
                 stage('Compute'){
-                         when {
-                       expression{params.Compute == true
-                       }
+                        when {
+                        expression{params.Compute == true
+                        }
                 }
                 steps{
                     
                     sh"terraform ${params.Actions} -target=module.Compute"
                     
                     }
-
                 }
                 stage('Notification'){
-                         when {
-                       expression{params.Notification == true
-                       }
+                        when {
+                        expression{params.Notification == true
+                        }
                 }
                 steps{
                     
                     sh"terraform ${params.Actions} -target=module.Notification"
                     
                     }
-
-                  }              
-              }
-               
+                    }              
+                }
             }
             stage('Terraform Completed'){
                 steps{

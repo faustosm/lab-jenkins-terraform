@@ -32,18 +32,18 @@ pipeline{
         
         stages{
 
-            stage('build'){
+            stage('Build'){
                 steps{
             checkout([$class: 'GitSCM', branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/krishnaduttPanchagnula/Multifunctional-terraform-Jenkins-pipeline']]])
                 }
             }
-            stage('init'){
+            stage('Terraform Init'){
                 steps{
                     sh"terraform init"
                 }
             }
 
-            stage('action'){
+            stage('Action'){
 
                 stages{
                     stage('Networking'){

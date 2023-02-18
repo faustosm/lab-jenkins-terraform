@@ -1,22 +1,27 @@
+
+
+terraform {
+  required_providers {
+    aws = {
+      source = "hashicorp/aws"
+      version = "4.31.0"
+    }
+  }
+}
+
 provider "aws" {
-  region = var.aws_region
+  # Configuration options
 }
 
-
-# Create AWS ec2 instance
-resource "aws_instance" "myFirstInstance" {
-  ami           = var.ami_id
-  instance_type = var.instance_type
-  tags= {
-    Name = var.tag_name
-  }
+module "Netwoking" {
+    source = "./modules/networking" 
 }
 
-# Create Elastic IP address
-resource "aws_eip" "myFirstInstance" {
-  vpc      = true
-  instance = aws_instance.myFirstInstance.id
-tags= {
-    Name = "my_elastic_ip"
-  }
+module "Compute" {
+    source = "./modules/compute"
+    subnet_id = module.Netwoking.id  
+}
+
+module "Notifications" {
+    source = "./modules/notifications"  
 }

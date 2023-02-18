@@ -2,7 +2,7 @@ pipeline{
     agent any
     environment {
                 LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
-                AWS_DEFAULT_REGION = credentials('AWS_DEFAULT_REGION')
+                AWS_DEFAULT_REGION = credentials('us-east-1')
                 //AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
                 //AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
                     
@@ -31,11 +31,11 @@ pipeline{
         }
         
         stages{
-            stage('Build'){
-                steps{
-            checkout([$class: 'GitSCM', branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/krishnaduttPanchagnula/Multifunctional-terraform-Jenkins-pipeline']]])
-                }
-            }
+            // stage('Checkout'){
+            //     steps{
+            // checkout([$class: 'GitSCM', branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/krishnaduttPanchagnula/Multifunctional-terraform-Jenkins-pipeline']]])
+            //     }
+            // }
             stage('Terraform Init'){
                 steps{
                     sh"terraform init"

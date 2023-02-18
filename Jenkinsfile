@@ -1,10 +1,10 @@
 pipeline{
     agent any
     environment {
-        LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
-                //AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
-                //AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
-                AWS_DEFAULT_REGION = credentials('us-east-1')
+                LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
+                AWS_ACCESS_KEY_ID     = credentials('	AWS Acecess Key')
+                AWS_SECRET_ACCESS_KEY = credentials('AWS Secret Access Key')
+                        //AWS_DEFAULT_REGION = credentials('us-east-1')
                     
                 }
     tools {

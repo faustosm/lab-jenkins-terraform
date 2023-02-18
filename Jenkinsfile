@@ -12,7 +12,7 @@ pipeline{
     }                 
         parameters{
             choice(
-                choices:['plan','apply','destroy'],
+                choices:['plan','apply --auto-approve','destroy'],
                 name:'Actions',
                 description: 'Describes the Actions')
             booleanParam(

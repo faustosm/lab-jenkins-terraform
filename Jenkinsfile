@@ -4,7 +4,7 @@ pipeline{
         LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
                 //AWS_ACCESS_KEY_ID     = credentials('jenkins-aws-secret-key-id')
                 //AWS_SECRET_ACCESS_KEY = credentials('jenkins-aws-secret-access-key')
-                //AWS_DEFAULT_REGION = credentials('us-east-1')
+                AWS_DEFAULT_REGION = credentials('us-east-1')
                     
                 }
     tools {

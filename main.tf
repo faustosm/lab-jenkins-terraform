@@ -21,7 +21,7 @@ module "Netwoking" {
 
 module "Compute" {
     source = "./modules/compute"
-    subnet_id = module.Netwoking.id  
+    subnet_id = module.Netwoking
 }
 
 module "Notifications" {

@@ -33,3 +33,17 @@ override.tf.json
 .terraformrc
 terraform.rc
 .terraform.lock.hcl
+
+### Remover acima caso de certo
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Ignore any .tfvars files that are generated automatically for each Terraform run. Most
+# .tfvars files are managed as part of configuration and so should be included in
+# version control.
+#
+# example.tfvars

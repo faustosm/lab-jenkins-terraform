@@ -1,5 +1,5 @@
 variable "subnet_id" {
-    default = ""
+    default = "10.0.0.0/16"
     description = "The subnet"
   
 }

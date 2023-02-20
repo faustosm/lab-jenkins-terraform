@@ -49,8 +49,8 @@ EOF
 ##########################
 
 
-resource "aws_instance" "test_ec2" {
-    ami           = "ami-0dfcb1ef8550277af"
+resource "aws_instance" "aws_instance_example_ec2" {
+    ami           = "ami-0dfcb1ef8550277af" # us-west-1
     instance_type = "t2.micro"
-    subnet_id = var.subnet_id  
+    subnet_id = var.subnet_id
 }

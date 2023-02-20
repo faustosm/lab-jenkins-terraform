@@ -2,25 +2,25 @@
 ###Lambda,IAM Creation####
 ##########################
 
-# resource "aws_iam_role" "iam_for_lambda" {
-#   name = "iam_for_lambda"
+resource "aws_iam_role" "iam_for_lambda" {
+  name = "iam_for_lambda"
 
-#   assume_role_policy = <<EOF
-# {
-#   "Version": "2012-10-17",
-#   "Statement": [
-#     {
-#       "Action": "sts:AssumeRole",
-#       "Principal": {
-#         "Service": "lambda.amazonaws.com"
-#       },
-#       "Effect": "Allow",
-#       "Sid": ""
-#     }
-#   ]
-# }
-# EOF
-# }
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
 
 # resource "aws_lambda_function" "test_lambda" {
 #   # If the file is not in the current working directory you will need to include a
@@ -49,8 +49,8 @@
 ##########################
 
 
-resource "aws_instance" "aws_instance_example_ec2" {
-    ami           = "ami-0dfcb1ef8550277af" # us-west-1
+resource "aws_instance" "test_ec2" {
+    ami           = "ami-005e54dee72cc1d00" # us-west-2
     instance_type = "t2.micro"
-    subnet_id = var.subnet_id
+    subnet_id = var.subnet_id  
 }

@@ -49,8 +49,9 @@ pipeline {
                 input message: 'Are you sure you want to run terraform apply?', ok: 'Apply', submitterParameter: 'apply_confirm'
                 withCredentials([[
                     credentialsId: 'aws-creds',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                    LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
+                    //accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    //secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                 ]]) {
                     sh "terraform apply -auto-approve -target=module.${params.module}"
                 }

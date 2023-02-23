@@ -12,8 +12,9 @@ pipeline {
     }
     
     parameters {
-        choice(name: 'module', choices: ['compute', 'networking'], description: 'Choose which module to create')
-        booleanParam(name: 'destroy', defaultValue: false, description: 'Destroy infrastructure instead of creating it')
+        choice(name: 'MODULE', choices: ['networking', 'compute'], description: 'Choose the module to deploy')
+        booleanParam(name: 'CONFIRM_APPLY', defaultValue: false, description: 'Confirm apply action')
+        booleanParam(name: 'CONFIRM_DESTROY', defaultValue: false, description: 'Confirm destroy action')
     }
     
     stages {
@@ -41,51 +42,38 @@ pipeline {
         }        
         stage('Terraform Plan') {
             when {
-                expression { params.destroy == false }
+                expression { params.MODULE == 'networking' || params.MODULE == 'compute' }
             }
             steps {
-                input message: 'Are you sure you want to run terraform plan?', ok: 'Plan', submitterParameter: 'plan_confirm'
-                withCredentials([[
-                    $class:'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'crendentials_aws_jenkins_terraform',
-                    AWS_ACCESS_KEY_ID: 'AWS_ACCESS_KEY_ID',
-                    AWS_ACCESS_KEY_ID: 'AWS_SECRET_ACCESS_KEY',
-                ]]) {
-                    sh "terraform plan -target=module.${params.module}"
+                script {
+                    def module = params.MODULE
+                    def confirm_apply = params.CONFIRM_APPLY
+
+                    sh "terraform plan -var-file=modules/${module}/variables.tfvars -out=${module}-plan"
+                    
+                    if (confirm_apply) {
+                        input message: "Do you want to apply the ${module} module?", ok: 'Apply'
+                        sh "terraform apply ${module}-plan"
+                    }
                 }
             }
         }
-        
-        stage('Terraform Apply') {
-            when {
-                expression { params.destroy == false && (currentBuild.result == null || currentBuild.result == 'SUCCESS') }
-            }
-            steps {
-                input message: 'Are you sure you want to run terraform apply?', ok: 'Apply', submitterParameter: 'apply_confirm'
-                withCredentials([[
-                    $class:'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'crendentials_aws_jenkins_terraform',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-                ]]) {
-                    sh "terraform apply -auto-approve -target=module.${params.module}"
-                }
-            }
-        }
-        
+
         stage('Terraform Destroy') {
             when {
-                expression { params.destroy == true && (currentBuild.result == null || currentBuild.result == 'SUCCESS') }
+                expression { params.MODULE == 'networking' || params.MODULE == 'compute' }
             }
             steps {
-                input message: 'Are you sure you want to run terraform destroy?', ok: 'Destroy', submitterParameter: 'destroy_confirm'
-                withCredentials([[
-                    $class:'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'crendentials_aws_jenkins_terraform',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-                ]]) {
-                    sh "terraform destroy -auto-approve -target=module.${params.module}"
+                script {
+                    def module = params.MODULE
+                    def confirm_destroy = params.CONFIRM_DESTROY
+
+                    sh "terraform plan -var-file=modules/${module}/variables.tfvars -destroy -out=${module}-destroy-plan"
+
+                    if (confirm_destroy) {
+                        input message: "Do you want to destroy the ${module} module?", ok: 'Destroy'
+                        sh "terraform apply ${module}-destroy-plan"
+                    }
                 }
             }
         }

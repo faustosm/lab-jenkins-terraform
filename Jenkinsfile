@@ -31,7 +31,7 @@ pipeline {
         // }        
         stage('Terraform Init') {
             steps {
-                sh 'terraform init-backend-config="bucket=my-bucket-jenkins-terraform"'
+                sh 'terraform init -backend-config="bucket=my-bucket-jenkins-terraform"'
             }
         }
         stage('Terraform Validate') {

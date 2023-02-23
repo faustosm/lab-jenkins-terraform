@@ -28,15 +28,14 @@ pipeline{
                 defaultValue: false,
                 description: 'Notify',
                 name: 'Notification')
-        }
-    parameters {
         choice(name: 'module',
         choices: ['compute', 'networking'],
         description: 'Escolha qual módulo criar')
         booleanParam(name: 'destroy',
         defaultValue: false,
         description: 'Destrua a infraestrutura em vez de criá-la')
-    }        
+
+        }      
         
         stages{
             stage('Terraform Init'){

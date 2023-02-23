@@ -1,74 +1,87 @@
-pipeline {
+pipeline{
     agent any
-
     environment {
-        LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
-        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
-        AWS_DEFAULT_REGION = 'us-east-1'
-    }
+                LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
+                AWS_DEFAULT_REGION = credentials('AWS_DEFAULT_REGION')
+                //AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+                //AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+                    
+                }
     tools {
         terraform 'terraform'
-    } 
-    parameters {
-        choice(name: 'MODULE', choices: ['networking', 'compute'], description: 'Choose the module to deploy')
-        booleanParam(name: 'CONFIRM_APPLY', defaultValue: false, description: 'Confirm apply action')
-        booleanParam(name: 'CONFIRM_DESTROY', defaultValue: false, description: 'Confirm destroy action')
-    }
-
-    stages {
-
-        stage('Terraform Init') {
-            steps {
-                sh 'terraform init -backend-config="bucket=my-bucket-name" -backend-config="key=my-key"'
-            }
+    }                 
+        parameters{
+            choice(
+                choices:['plan','apply --auto-approve','destroy'],
+                name:'Actions',
+                description: 'Describes the Actions')
+            booleanParam(
+                defaultValue: false,
+                description: 'network',
+                name: 'Networking'
+                )
+            booleanParam(
+                defaultValue: false,
+                description: 'compute',
+                name: 'Compute')
+            booleanParam(
+                defaultValue: false,
+                description: 'Notify',
+                name: 'Notification')
         }
-
-        stage('Terraform Validate') {
-            steps {
-                sh 'terraform validate'
+        
+        stages{
+            // stage('Checkout'){
+            //     steps{
+            // checkout([$class: 'GitSCM', branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/krishnaduttPanchagnula/Multifunctional-terraform-Jenkins-pipeline']]])
+            //     }
+            // }
+            stage('Terraform Init'){
+                steps{
+                    sh"terraform init"
+                }
             }
-        }
-
-        stage('Terraform Plan') {
-            when {
-                expression { params.MODULE == 'networking' || params.MODULE == 'compute' }
-            }
-            steps {
-                script {
-                    def module = params.MODULE
-                    def confirm_apply = params.CONFIRM_APPLY
-
-                    sh "terraform plan -var-file=modules/${module}/variables.tfvars -out=${module}-plan"
+            stage('Action'){
+                stages{
+                    stage('Networking'){
+                        when {
+                        expression{params.Networking == true
+                        }
+                }
+                steps{
                     
-                    if (confirm_apply) {
-                        input message: "Do you want to apply the ${module} module?", ok: 'Apply'
-                        sh "terraform apply ${module}-plan"
-                    } else {
-                        sh "echo 'Skipping apply...'"
+                    sh"terraform ${params.Actions} -target=module.Netwoking"
+                    
                     }
                 }
-            }
-        }
-
-        stage('Terraform Destroy') {
-            when {
-                expression { params.MODULE == 'networking' || params.MODULE == 'compute' }
-            }
-            steps {
-                script {
-                    def module = params.MODULE
-                    def confirm_destroy = params.CONFIRM_DESTROY
-
-                    sh "terraform plan -var-file=modules/${module}/variables.tfvars -destroy -out=${module}-destroy-plan"
-
-                    if (confirm_destroy) {
-                        input message: "Do you want to destroy the ${module} module?", ok: 'Destroy'
-                        sh "terraform apply ${module}-destroy-plan"
-                    } else {
-                        sh "echo 'Skipping destroy...'"
+                stage('Compute'){
+                        when {
+                        expression{params.Compute == true
+                        }
+                }
+                steps{
+                    
+                    sh"terraform ${params.Actions} -target=module.Compute"
+                    
                     }
                 }
+                stage('Notification'){
+                        when {
+                        expression{params.Notification == true
+                        }
+                }
+                steps{
+                    
+                    sh"terraform ${params.Actions} -target=module.Notification"
+                    
+                    }
+                    }              
+                }
+            }
+            stage('Terraform Completed'){
+                steps{
+                    echo "Terraform Done..!"
+                    
             }
         }
     }

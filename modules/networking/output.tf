@@ -1,3 +1,3 @@
 output "saida" {
-  value = aws_subnet.subnet_example
+  value = aws_subnet.subnet_private_example
 }

@@ -22,6 +22,11 @@ pipeline {
                 checkout scm
             }
         }
+        stage('Install Curl') {
+            steps {
+                sh 'apt-get update %% apt-get install curl -y'
+            }
+        }
         stage('Install Terraform') {
             steps {
                 withEnv(['TF_VERSION=1.0.8']) {

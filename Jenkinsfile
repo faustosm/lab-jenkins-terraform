@@ -22,19 +22,13 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Install Curl') {
-            steps {
-                sh 'cat /etc/os-release'
-                sh 'apt update && apt install curl -y'
-            }
-        }
-        stage('Install Terraform') {
-            steps {
-                withEnv(['TF_VERSION=1.0.8']) {
-                    sh 'curl -LO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip && unzip terraform_${TF_VERSION}_linux_amd64.zip && sudo mv terraform /usr/local/bin/terraform && rm terraform_${TF_VERSION}_linux_amd64.zip'
-                }
-            }
-        }        
+        // stage('Install Terraform') {
+        //     steps {
+        //         withEnv(['TF_VERSION=1.0.8']) {
+        //             sh 'curl -LO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip && unzip terraform_${TF_VERSION}_linux_amd64.zip && sudo mv terraform /usr/local/bin/terraform && rm terraform_${TF_VERSION}_linux_amd64.zip'
+        //         }
+        //     }
+        // }        
         stage('Terraform Init') {
             steps {
                 sh 'terraform init-backend-config="bucket=my-bucket-jenkins-terraform"'

@@ -9,53 +9,81 @@ pipeline{
                 }
     tools {
         terraform 'terraform'
-    }
-    parameters {
-        choice(name: 'module', choices: ['compute', 'networking'], description: 'Escolha qual módulo criar')
-        booleanParam(name: 'destroy', defaultValue: false, description: 'Destrua a infraestrutura em vez de criá-la')
-    }
-    stages{
+    }                 
+        parameters{
+            choice(
+                choices:['plan --auto-approve','apply --auto-approve','destroy --auto-approve'],
+                name:'Ação',
+                description: 'Descrição da Ação')
 
-        stage('Terraform Init') {
-            steps {
-                sh 'terraform init'
+            booleanParam(
+                defaultValue: false,
+                description: 'network',
+                name: 'Networking'
+                )
+            booleanParam(
+                defaultValue: false,
+                description: 'compute',
+                name: 'Compute')
+            booleanParam(
+                defaultValue: false,
+                description: 'Notify',
+                name: 'Notification')
+
+        }      
+        
+        stages{
+            stage('Terraform Init'){
+                steps{
+                    sh"terraform init"
+                }
             }
-        }
         stage('Terraform Validate') {
             steps {
                 sh 'terraform validate'
             }
-        }         
-        stage('Terraform Plan') {
-            when {
-                expression { params.destroy == false }
-            }
-            steps {
-                input message: 'Tem certeza de que deseja executar o terraform plan?', ok: 'Plan', submitterParameter: 'plan_confirm'
-                withCredentials([[
-                    $class:'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'crendentials_aws_jenkins_terraform',
-                    AWS_ACCESS_KEY_ID: 'AWS_ACCESS_KEY_ID',
-                    AWS_ACCESS_KEY_ID: 'AWS_SECRET_ACCESS_KEY',
-                ]]) {
-                    sh "terraform plan -target=module.${params.module}"
+        }            
+            stage('Ação'){
+                stages{
+                    stage('Networking'){
+                        when {
+                        expression{params.Networking == true
+                        }
+                }
+                steps{
+                    
+                    sh"terraform ${params.Ação} -target=module.Netwoking"
+                    
+                    }
+                }
+                stage('Compute'){
+                        when {
+                        expression{params.Compute == true
+                        }
+                }
+                steps{
+                    
+                    sh"terraform ${params.Ação} -target=module.Compute"
+                    
+                    }
+                }
+                stage('Notification'){
+                        when {
+                        expression{params.Notification == true
+                        }
+                }
+                steps{
+                    
+                    sh"terraform ${params.Ação} -target=module.Notification"
+                    
+                    }
+                    }              
                 }
             }
-        }
-        stage('Terraform Apply') {
-            when {
-                expression { params.destroy == false && (currentBuild.result == null || currentBuild.result == 'SUCCESS') }
-            }
-            steps {
-                input message: 'Are you sure you want to run terraform apply?', ok: 'Apply', submitterParameter: 'apply_confirm'
-                withCredentials([[
-                    $class:'AmazonWebServicesCredentialsBinding',
-                    credentialsId: 'crendentials_aws_jenkins_terraform',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
-                ]]) {
-                    sh "terraform apply -auto-approve -target=module.${params.module}"
-                }
+            stage('Terraform Completed'){
+                steps{
+                    echo "Terraform Done..!"
+                    
             }
         }
     }

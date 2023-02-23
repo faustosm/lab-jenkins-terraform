@@ -32,9 +32,10 @@ pipeline {
             steps {
                 input message: 'Are you sure you want to run terraform plan?', ok: 'Plan', submitterParameter: 'plan_confirm'
                 withCredentials([[
-                    credentialsId: 'aws-creds',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                    //credentialsId: 'aws-creds',
+                    LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
+                    //accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    //secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                 ]]) {
                     sh "terraform plan -target=module.${params.module}"
                 }

@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    options {
-        colors()
-    }
-
     environment {
         LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')

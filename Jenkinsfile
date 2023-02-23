@@ -35,9 +35,10 @@ pipeline {
             steps {
                 input message: 'Are you sure you want to run terraform plan?', ok: 'Plan', submitterParameter: 'plan_confirm'
                 withCredentials([[
+                    $class:'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-creds',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                    AWS_ACCESS_KEY_ID: 'AWS_ACCESS_KEY_ID',
+                    AWS_ACCESS_KEY_ID: 'AWS_SECRET_ACCESS_KEY',
                 ]]) {
                     sh "terraform plan -target=module.${params.module}"
                 }
@@ -51,6 +52,7 @@ pipeline {
             steps {
                 input message: 'Are you sure you want to run terraform apply?', ok: 'Apply', submitterParameter: 'apply_confirm'
                 withCredentials([[
+                    $class:'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-creds',
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
@@ -67,6 +69,7 @@ pipeline {
             steps {
                 input message: 'Are you sure you want to run terraform destroy?', ok: 'Destroy', submitterParameter: 'destroy_confirm'
                 withCredentials([[
+                    $class:'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'aws-creds',
                     accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',

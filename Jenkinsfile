@@ -15,16 +15,16 @@ pipeline{
             booleanParam(
                 defaultValue: false,
                 description: 'network',
-                name: 'Networking'
+                name: 'network'
                 )
             booleanParam(
                 defaultValue: false,
-                description: 'compute',
-                name: 'Compute')
+                description: 'master',
+                name: 'master')
             booleanParam(
                 defaultValue: false,
-                description: 'Notify',
-                name: 'Notification')
+                description: 'nodes',
+                name: 'nodes')
         }
         
         stages{
@@ -35,36 +35,36 @@ pipeline{
             }
             stage('Ação aplicada'){
                 stages{
-                    stage('Momulo Networking'){
+                    stage('Momulo network'){
                         when {
-                        expression{params.Networking == true
+                        expression{params.network == true
                         }
                 }
                 steps{
                     
-                    sh"terraform ${params.Actions} -target=module.Netwoking"
+                    sh"terraform ${params.Actions} -target=module.network"
                     
                     }
                 }
-                stage('Momulo Compute'){
+                stage('Momulo master'){
                         when {
-                        expression{params.Compute == true
+                        expression{params.master == true
                         }
                 }
                 steps{
                     
-                    sh"terraform ${params.Actions} -target=module.Compute"
+                    sh"terraform ${params.Actions} -target=module.master"
                     
                     }
                 }
-                stage('Momulo Notification'){
+                stage('Momulo nodes'){
                         when {
-                        expression{params.Notification == true
+                        expression{params.nodes == true
                         }
                 }
                 steps{
                     
-                    sh"terraform ${params.Actions} -target=module.Notification"
+                    sh"terraform ${params.Actions} -target=module.nodes"
                     
                     }
                     }              

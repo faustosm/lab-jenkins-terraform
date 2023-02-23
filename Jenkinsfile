@@ -29,18 +29,26 @@ pipeline{
                 description: 'Notify',
                 name: 'Notification')
         }
+    parameters {
+        choice(name: 'module',
+        choices: ['compute', 'networking'],
+        description: 'Escolha qual módulo criar')
+        booleanParam(name: 'destroy',
+        defaultValue: false,
+        description: 'Destrua a infraestrutura em vez de criá-la')
+    }        
         
         stages{
-            // stage('Checkout'){
-            //     steps{
-            // checkout([$class: 'GitSCM', branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/krishnaduttPanchagnula/Multifunctional-terraform-Jenkins-pipeline']]])
-            //     }
-            // }
             stage('Terraform Init'){
                 steps{
                     sh"terraform init"
                 }
             }
+        stage('Terraform Validate') {
+            steps {
+                sh 'terraform validate'
+            }
+        }            
             stage('Action'){
                 stages{
                     stage('Networking'){

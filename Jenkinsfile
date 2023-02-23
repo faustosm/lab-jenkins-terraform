@@ -9,87 +9,27 @@ pipeline{
                 }
     tools {
         terraform 'terraform'
-    }                 
-        parameters{
-            choice(
-                choices:['plan','apply --auto-approve','destroy'],
-                name:'Actions',
-                description: 'Describes the Actions')
-            booleanParam(
-                defaultValue: false,
-                description: 'network',
-                name: 'Networking'
-                )
-            booleanParam(
-                defaultValue: false,
-                description: 'compute',
-                name: 'Compute')
-            booleanParam(
-                defaultValue: false,
-                description: 'Notify',
-                name: 'Notification')
-        choice(name: 'module',
-        choices: ['compute', 'networking'],
-        description: 'Escolha qual módulo criar')
-        booleanParam(name: 'destroy',
-        defaultValue: false,
-        description: 'Destrua a infraestrutura em vez de criá-la')
-
-        }      
-        
-        stages{
-            stage('Terraform Init'){
-                steps{
-                    sh"terraform init"
-                }
+    }
+    parameters {
+        choice(name: 'module', choices: ['compute', 'networking'], description: 'Escolha qual módulo criar')
+        booleanParam(name: 'destroy', defaultValue: false, description: 'Destrua a infraestrutura em vez de criá-la')
+    }
+    stages{
+        stage('Terraform Apply') {
+            when {
+                expression { params.destroy == false && (currentBuild.result == null || currentBuild.result == 'SUCCESS') }
             }
-        stage('Terraform Validate') {
             steps {
-                sh 'terraform validate'
-            }
-        }            
-            stage('Action'){
-                stages{
-                    stage('Networking'){
-                        when {
-                        expression{params.Networking == true
-                        }
-                }
-                steps{
-                    
-                    sh"terraform ${params.Actions} -target=module.Netwoking"
-                    
-                    }
-                }
-                stage('Compute'){
-                        when {
-                        expression{params.Compute == true
-                        }
-                }
-                steps{
-                    
-                    sh"terraform ${params.Actions} -target=module.Compute"
-                    
-                    }
-                }
-                stage('Notification'){
-                        when {
-                        expression{params.Notification == true
-                        }
-                }
-                steps{
-                    
-                    sh"terraform ${params.Actions} -target=module.Notification"
-                    
-                    }
-                    }              
+                input message: 'Are you sure you want to run terraform apply?', ok: 'Apply', submitterParameter: 'apply_confirm'
+                withCredentials([[
+                    $class:'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'crendentials_aws_jenkins_terraform',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                ]]) {
+                    sh "terraform apply -auto-approve -target=module.${params.module}"
                 }
             }
-            stage('Terraform Completed'){
-                steps{
-                    echo "Terraform Done..!"
-                    
-            }
-        }
+        }        
     }
 }

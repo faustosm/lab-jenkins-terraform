@@ -33,9 +33,9 @@ pipeline{
                     sh"terraform init"
                 }
             }
-            stage('Action'){
+            stage('Ação aplicada'){
                 stages{
-                    stage('Networking'){
+                    stage('Momulo Networking'){
                         when {
                         expression{params.Networking == true
                         }
@@ -46,7 +46,7 @@ pipeline{
                     
                     }
                 }
-                stage('Compute'){
+                stage('Momulo Compute'){
                         when {
                         expression{params.Compute == true
                         }
@@ -57,7 +57,7 @@ pipeline{
                     
                     }
                 }
-                stage('Notification'){
+                stage('Momulo Notification'){
                         when {
                         expression{params.Notification == true
                         }

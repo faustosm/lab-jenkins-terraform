@@ -1,5 +1,3 @@
-
-
 terraform {
   required_providers {
     aws = {
@@ -10,7 +8,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  # Configuration options
 }
 
 
@@ -20,8 +18,8 @@ module "Netwoking" {
 }
 
 module "Compute" {
-    source = "./modules/compute"
-    subnet_id = module.Netwoking
+      source = "./modules/compute"
+      //subnet_id = module.Netwoking.saida
 }
 
 module "Notifications" {

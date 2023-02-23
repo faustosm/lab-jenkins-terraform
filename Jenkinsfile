@@ -24,7 +24,8 @@ pipeline {
         }
         stage('Install Curl') {
             steps {
-                sh 'apt-get update %% apt-get install curl -y'
+                sh 'cat /etc/os-release'
+                sh 'sudo apt update && sudo apt install curl -y'
             }
         }
         stage('Install Terraform') {

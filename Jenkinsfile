@@ -6,19 +6,21 @@ pipeline {
     }
 
     environment {
+        LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
         AWS_ACCESS_KEY_ID = credentials('aws-access-key-id')
         AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key')
         AWS_DEFAULT_REGION = 'us-east-1'
     }
-
     tools {
         terraform 'terraform'
-    }
+    } 
     parameters {
         choice(name: 'MODULE', choices: ['networking', 'compute'], description: 'Choose the module to deploy')
         booleanParam(name: 'CONFIRM_APPLY', defaultValue: false, description: 'Confirm apply action')
         booleanParam(name: 'CONFIRM_DESTROY', defaultValue: false, description: 'Confirm destroy action')
     }
+
+    stages {
 
         stage('Terraform Init') {
             steps {
@@ -74,3 +76,4 @@ pipeline {
             }
         }
     }
+}

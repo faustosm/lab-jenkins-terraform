@@ -15,12 +15,23 @@ pipeline{
         booleanParam(name: 'destroy', defaultValue: false, description: 'Destrua a infraestrutura em vez de criá-la')
     }
     stages{
+
+        stage('Terraform Init') {
+            steps {
+                sh 'terraform init'
+            }
+        }
+        stage('Terraform Validate') {
+            steps {
+                sh 'terraform validate'
+            }
+        }         
         stage('Terraform Plan') {
             when {
                 expression { params.destroy == false }
             }
             steps {
-                input message: 'Are you sure you want to run terraform plan?', ok: 'Plan', submitterParameter: 'plan_confirm'
+                input message: 'Tem certeza de que deseja executar o terraform plan?', ok: 'Plan', submitterParameter: 'plan_confirm'
                 withCredentials([[
                     $class:'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'crendentials_aws_jenkins_terraform',

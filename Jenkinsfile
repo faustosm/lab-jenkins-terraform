@@ -15,21 +15,21 @@ pipeline{
         booleanParam(name: 'destroy', defaultValue: false, description: 'Destrua a infraestrutura em vez de criá-la')
     }
     stages{
-        stage('Terraform Apply') {
+        stage('Terraform Plan') {
             when {
-                expression { params.destroy == false && (currentBuild.result == null || currentBuild.result == 'SUCCESS') }
+                expression { params.destroy == false }
             }
             steps {
-                input message: 'Are you sure you want to run terraform apply?', ok: 'Apply', submitterParameter: 'apply_confirm'
+                input message: 'Are you sure you want to run terraform plan?', ok: 'Plan', submitterParameter: 'plan_confirm'
                 withCredentials([[
                     $class:'AmazonWebServicesCredentialsBinding',
                     credentialsId: 'crendentials_aws_jenkins_terraform',
-                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                    AWS_ACCESS_KEY_ID: 'AWS_ACCESS_KEY_ID',
+                    AWS_ACCESS_KEY_ID: 'AWS_SECRET_ACCESS_KEY',
                 ]]) {
-                    sh "terraform apply -auto-approve -target=module.${params.module}"
+                    sh "terraform plan -target=module.${params.module}"
                 }
             }
-        }        
+        }      
     }
 }

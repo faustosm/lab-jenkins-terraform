@@ -2,11 +2,8 @@ pipeline {
     agent any
     
     environment {
-        LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
-        AWS_DEFAULT_REGION = credentials('AWS_DEFAULT_REGION')
-        
-        //AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
-        //AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+        AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_ACCESS_KEY_ID')
     }
     
     tools {
@@ -19,6 +16,12 @@ pipeline {
     }
     
     stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        
         stage('Terraform Init') {
             steps {
                 sh 'terraform init'
@@ -32,10 +35,9 @@ pipeline {
             steps {
                 input message: 'Are you sure you want to run terraform plan?', ok: 'Plan', submitterParameter: 'plan_confirm'
                 withCredentials([[
-                    //credentialsId: 'aws-creds',
-                    LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
-                    //accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    //secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                    credentialsId: 'aws-creds',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                 ]]) {
                     sh "terraform plan -target=module.${params.module}"
                 }
@@ -49,10 +51,9 @@ pipeline {
             steps {
                 input message: 'Are you sure you want to run terraform apply?', ok: 'Apply', submitterParameter: 'apply_confirm'
                 withCredentials([[
-                    //credentialsId: 'aws-creds',
-                    LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
-                    //accessKeyVariable: 'AWS_ACCESS_KEY_ID',
-                    //secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                    credentialsId: 'aws-creds',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                 ]]) {
                     sh "terraform apply -auto-approve -target=module.${params.module}"
                 }

@@ -48,7 +48,7 @@ pipeline {
             steps {
                 input message: 'Are you sure you want to run terraform apply?', ok: 'Apply', submitterParameter: 'apply_confirm'
                 withCredentials([[
-                    credentialsId: 'aws-creds',
+                    //credentialsId: 'aws-creds',
                     LICENSE_KEY_FILE = credentials('crendentials_aws_jenkins_terraform')
                     //accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                     //secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',

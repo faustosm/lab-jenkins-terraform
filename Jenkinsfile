@@ -9,7 +9,7 @@ pipeline{
     }                 
         parameters{
             choice(
-                choices:['plan','apply -auto-approve=false','destroy -auto-approve=false'],
+                choices:['plan','apply ','destroy'],
                 name:'Actions',
                 description: 'Describes the Actions')
             booleanParam(

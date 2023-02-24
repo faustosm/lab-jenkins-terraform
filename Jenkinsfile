@@ -48,6 +48,22 @@ pipeline{
                         sh "terraform apply myplan"
                     }
                 }
-            }            
+            }
+            stage('Terraform Destroy') {
+            when {
+                expression { params.destroy == true && (currentBuild.result == null || currentBuild.result == 'SUCCESS') }
+            }
+            steps {
+                input message: 'Are you sure you want to run terraform destroy?', ok: 'Destroy', submitterParameter: 'destroy_confirm'
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding', 
+                    credentialsId: 'crendentials_aws_jenkins_terraform', //adicionar o id das credentials aws
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                ]]) {
+                    sh "terraform destroy -auto-approve -target=module.${params.module}"
+                }
+            }
+        }                    
         }
 }

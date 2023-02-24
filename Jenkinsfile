@@ -29,7 +29,7 @@ pipeline{
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                     ]]) {
-                        sh "terraform plan -out myplan -auto-approve -target=module.${params.module}"
+                        sh "terraform plan -out myplan -target=module.${params.module}"
                     }
                 }
             }
@@ -44,7 +44,7 @@ pipeline{
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                     ]]) {
-                        sh "terraform apply myplan -target=module.${params.module}"
+                        sh "terraform apply myplan -auto-approve -target=module.${params.module}"
                     }
                 }
             }            

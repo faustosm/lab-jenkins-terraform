@@ -8,24 +8,8 @@ pipeline{
         terraform 'terraform'
     }                 
         parameters{
-            choice(
-                choices:['plan','apply ','destroy'],
-                name:'Actions',
-                description: 'Describes the Actions')
-            booleanParam(
-                defaultValue: false,
-                description: 'network',
-                name: 'network'
-                )
-            booleanParam(
-                defaultValue: false,
-                description: 'master',
-                name: 'master')
-            booleanParam(
-                defaultValue: false,
-                description: 'nodes',
-                name: 'nodes')
-        }
+            choice(name: 'module', choices: ['network', 'master','nodes'], description: 'Choose which module to create')
+            booleanParam(name: 'destroy', defaultValue: false, description: 'Destroy infrastructure instead of creating it')
         
         stages{
             stage('Terraform Init'){
@@ -33,48 +17,20 @@ pipeline{
                     sh"terraform init"
                 }
             }
-            stage('Ação aplicada'){
-                stages{
-                    stage('Momulo network'){
-                        when {
-                        expression{params.network == true
-                        }
-                }
-                steps{
-                    
-                    sh"terraform ${params.Actions} -target=module.network"
-                    
-                    }
-                }
-                stage('Momulo master'){
-                        when {
-                        expression{params.master == true
-                        }
-                }
-                steps{
-                    
-                    sh"terraform ${params.Actions} -target=module.master"
-                    
-                    }
-                }
-                stage('Momulo nodes'){
-                        when {
-                        expression{params.nodes == true
-                        }
-                }
-                steps{
-                    
-                    sh"terraform ${params.Actions} -target=module.nodes"
-                    
-                    }
-                    }              
+        stage('Terraform Plan') {
+            when {
+                expression { params.destroy == false }
+            }
+            steps {
+                input message: 'Are you sure you want to run terraform plan?', ok: 'Plan', submitterParameter: 'plan_confirm'
+                withCredentials([[
+                    credentialsId: 'crendentials_aws_jenkins_terraform',
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
+                ]]) {
+                    sh "terraform plan -target=module.${params.module}"
                 }
             }
-            stage('Terraform Completed'){
-                steps{
-                    echo "Terraform Done..!"
-                    
-            }
-        }
-    }
+        }            
+
 }

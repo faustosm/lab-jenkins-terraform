@@ -25,7 +25,7 @@ pipeline{
                     input message: 'Are you sure you want to run terraform plan?', ok: 'Plan', submitterParameter: 'plan_confirm'
                     withCredentials([[
                         $class: 'AmazonWebServicesCredentialsBinding',
-                        credentialsId: 'crendentials_aws_jenkins_terraform',
+                        credentialsId: 'crendentials_aws_jenkins_terraform', //adicionar o id das credentials aws
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                     ]]) {
@@ -40,11 +40,12 @@ pipeline{
                 steps {
                     input message: 'Are you sure you want to run terraform apply?', ok: 'Apply', submitterParameter: 'apply_confirm'
                     withCredentials([[
-                        $class: 'AmazonWebServicesCredentialsBinding', //adicionar o id das credentials aws
+                        $class: 'AmazonWebServicesCredentialsBinding', 
+                        credentialsId: 'crendentials_aws_jenkins_terraform', //adicionar o id das credentials aws
                         accessKeyVariable: 'AWS_ACCESS_KEY_ID',
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY',
                     ]]) {
-                        sh "terraform apply myplan -auto-approve -target=module.${params.module}"
+                        sh "terraform apply myplan -target=module.${params.module}"
                     }
                 }
             }            
